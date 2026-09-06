@@ -1,0 +1,42 @@
+name: Autobuild (Latest)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # 构建 CVE-2024-35250（Release x64，使用 VS2022 工具集 v143）
+      - name: Build CVE-2024-35250
+        run: |
+          msbuild CVE-2024-35250\CVE-2024-35250.vcxproj /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /p:WindowsTargetPlatformVersion=10.0
+
+      # 构建 CVE-2026-62735（Release x64，使用 VS2022 工具集 v143）
+      - name: Build CVE-2026-62735
+        run: |
+          msbuild CVE-2026-62735\CVE-2026-62735.vcxproj /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /p:WindowsTargetPlatformVersion=10.0
+
+      # 收集两个项目的可执行文件
+      - name: Collect artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts
+          Copy-Item -Path "CVE-2024-35250\x64\Release\CVE-2024-35250.exe" -Destination artifacts\
+          Copy-Item -Path "CVE-2026-62735\x64\Release\CVE-2026-62735.exe" -Destination artifacts\
+
+      # 上传构建产物，可供下载
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows-Build
+          path: artifacts/
