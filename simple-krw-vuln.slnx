@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CVE-2024-35250/CVE-2024-35250.vcxproj" Id="287f491b-29ef-40aa-85a1-49f258acd2cd" />
+  <Project Path="CVE-2026-62735/CVE-2026-62735.vcxproj" Id="ce3a186f-5c52-4fb7-addf-3f2064efb610" />
+</Solution>
